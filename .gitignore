@@ -1,0 +1,68 @@
+# ==========================================
+# Java / Maven (Spring Boot)
+# ==========================================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+/mvnw
+/mvnw.cmd
+.mvn/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+
+# ==========================================
+# JavaScript / Node (React)
+# ==========================================
+node_modules/
+/build/
+/dist/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# ==========================================
+# IDE & Editors
+# ==========================================
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# Eclipse
+.settings/
+.project
+.classpath
+.factorypath
+
+# ==========================================
+# Operating System
+# ==========================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# Database & Docker
+# ==========================================
+# Jika kamu pakai H2 database lokal
+*.mv.db
+*.trace.db
+
+# Docker
+.docker/
