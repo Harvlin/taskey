@@ -1,6 +1,6 @@
 services:
   mysql:
-    image: 'mysql:latest'
+    image: mysql:8.4
     container_name: taskey-mysql
     restart: unless-stopped
     environment:
@@ -52,3 +52,5 @@ services:
     ports:
       - "${APP_EXTERNAL_PORT:-8088}:8080"
 
+volumes:
+  mysql_data:

@@ -3,6 +3,7 @@ import { seedProjects, seedLabels, seedTasks } from "./seed";
 
 const KEY = "todoist_clone_db_v2";
 const USERS_KEY = "todoist_clone_users_v1";
+const AUTH_KEY = "todoist_auth";
 
 interface DB { tasks: Task[]; projects: Project[]; labels: Label[]; }
 interface MockUser { id: string; name: string; email: string; password: string; avatarUrl?: string; }
@@ -55,7 +56,16 @@ function userIdFromToken(token: string): string | null {
   } catch { return null; }
 }
 
+export function resetMockData() {
+  localStorage.removeItem(KEY);
+  localStorage.removeItem(USERS_KEY);
+  localStorage.removeItem(AUTH_KEY);
+  load();
+  loadUsers();
+}
+
 export const mockApi = {
+  reset(): void { resetMockData(); },
   async getTasks(): Promise<Task[]> { await delay(); return load().tasks; },
   async getProjects(): Promise<Project[]> { await delay(150, 300); return load().projects; },
   async getLabels(): Promise<Label[]> { await delay(150, 300); return load().labels; },
@@ -152,6 +162,10 @@ export const mockApi = {
     return publicUser(u);
   },
 };
+
+if (import.meta.env.DEV) {
+  (globalThis as any).__resetMockData = resetMockData;
+}
 
 // Backwards-compat alias for any leftover imports.
 export const api = mockApi;
