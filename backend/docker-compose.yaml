@@ -1,0 +1,54 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    container_name: taskey-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-taskey}
+      MYSQL_USER: ${DB_USER:-taskey}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-taskey}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootpassword}
+    ports:
+      - "${DB_EXTERNAL_PORT:-3307}:3306"
+    volumes:
+        - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  adminer:
+    image: adminer:latest
+    container_name: taskey-adminer
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_started
+    environment:
+      ADMINER_DEFAULT_SERVER: mysql
+    ports:
+      - "${ADMINER_EXTERNAL_PORT:-8888}:8080"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taskey-app
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-taskey}
+      DB_USER: ${DB_USER:-taskey}
+      DB_PASSWORD: ${DB_PASSWORD:-taskey}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+    ports:
+      - "${APP_EXTERNAL_PORT:-8088}:8080"
+
